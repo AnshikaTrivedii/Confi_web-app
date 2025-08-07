@@ -13,11 +13,11 @@ import 'swiper/css/pagination';
 
 const ProductsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [animateCards, setAnimateCards] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const productSectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
