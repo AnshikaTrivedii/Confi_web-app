@@ -1,15 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import ProductDetailModal from '../components/ProductDetailModal';
+import ProductSeriesList from '../components/ProductSeriesList';
 import { products, categories } from '../data/products';
 import { Product } from '../types';
-// Swiper imports
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 const ProductsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -268,98 +262,98 @@ const ProductsPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Products Coverflow Carousel */}
-      <section ref={productSectionRef} className="py-16 relative">
-        <div className="relative">
-          <Swiper
-            effect="coverflow"
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={window.innerWidth < 768 ? 1 : 2.5}
-            loop={true}
-            coverflowEffect={{
-              rotate: 30,
-              stretch: 0,
-              depth: 200,
-              modifier: 1,
-              slideShadows: true,
-            }}
-            navigation
-            pagination={{ clickable: true }}
-            modules={[EffectCoverflow, Navigation, Pagination]}
-            className="w-full max-w-7xl mx-auto px-4"
-          >
+      {/* Products Grid Section */}
+      <section ref={productSectionRef} className="py-16 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">Our Products</h2>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Discover our comprehensive range of high-performance LED displays designed for both indoor and outdoor applications
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#67595e] to-[#8b7d82] mx-auto mt-8 rounded-full"></div>
+          </div>
+
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {filteredProducts.map((product, index) => (
-              <SwiperSlide key={product.id} className="flex justify-center items-center py-8">
-                <div
-                  className="relative product-card rounded-2xl border border-white/30 shadow-2xl bg-white/30 backdrop-blur-lg overflow-hidden min-w-[340px] max-w-[400px] md:min-w-[400px] md:max-w-[480px] h-[520px] flex-shrink-0 transition-transform duration-500 hover:scale-105 hover:shadow-3xl group"
-                >
-                  {/* Background Image */}
+              <div
+                key={product.id}
+                className={`bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl group border border-gray-100 ${
+                  animateCards ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
+                }`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* Product Image */}
+                <div className="relative h-48 overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="absolute inset-0 w-full h-full object-cover z-0"
-                    style={{ filter: 'brightness(0.7) saturate(1.2)' }}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
                     }}
                   />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-0" />
-                  {/* Card Content */}
-                  <div className="relative z-10 flex flex-col justify-between h-full p-8">
-                    <div className="flex gap-2 mb-6">
-                      <span className="bg-white/60 text-[#67595e] px-3 py-1 rounded-full text-xs font-semibold shadow-md backdrop-blur-sm">
-                        {product.category}
-                      </span>
-                      <span className={`bg-white/60 px-3 py-1 rounded-full text-xs font-semibold shadow-md backdrop-blur-sm ${getEnvironmentColor(product.environment)}`}> 
-                        {product.environment}
-                      </span>
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center">
-                      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white mb-4 drop-shadow-lg">
-                        {product.name}
-                      </h3>
-                      <div className="space-y-2 mb-6">
-                        <div className="flex justify-between text-sm text-white/90">
-                          <span>Pixel Pitch:</span>
-                          <span className="font-bold">{product.pixelPitch}mm</span>
-                        </div>
-                        <div className="flex justify-between text-sm text-white/90">
-                          <span>Brightness:</span>
-                          <span className="font-bold">{product.brightness} cd/m²</span>
-                        </div>
-                        <div className="flex justify-between text-sm text-white/90">
-                          <span>Resolution:</span>
-                          <span className="font-bold">{product.resolution.width} × {product.resolution.height}</span>
-                        </div>
-                        <div className="flex justify-between text-sm text-white/90">
-                          <span>Power:</span>
-                          <span className="font-bold">{product.avgPowerConsumption}W avg</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-3 mt-2">
-                      <button
-                        onClick={() => handleViewDetails(product)}
-                        className="flex-1 bg-[#67595e]/90 text-white px-4 py-3 rounded-xl font-bold text-base shadow-lg hover:bg-[#8b7d82]/90 transition-all duration-200 backdrop-blur-sm"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => window.open('https://strong-sprinkles-0a52a2.netlify.app/', '_blank')}
-                        className="flex-1 bg-white/70 text-[#67595e] px-4 py-3 rounded-xl font-bold text-base shadow-lg hover:bg-white/90 transition-all duration-200 backdrop-blur-sm"
-                      >
-                        Try Calculator
-                      </button>
-                    </div>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Category Badge */}
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    <span className="bg-white/90 text-[#67595e] px-2 py-1 rounded-full text-xs font-semibold shadow-md">
+                      {product.category}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold shadow-md ${getEnvironmentColor(product.environment)}`}> 
+                      {product.environment}
+                    </span>
                   </div>
                 </div>
-              </SwiperSlide>
+
+                {/* Product Content */}
+                <div className="p-4">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#67595e] transition-colors duration-300 line-clamp-2">
+                    {product.name}
+                  </h3>
+                  
+                  {/* Product Specs */}
+                  <div className="space-y-1 mb-4 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Pixel Pitch:</span>
+                      <span className="font-semibold text-gray-900">{product.pixelPitch}mm</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Brightness:</span>
+                      <span className="font-semibold text-gray-900">{product.brightness} cd/m²</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Resolution:</span>
+                      <span className="font-semibold text-gray-900">{product.resolution.width} × {product.resolution.height}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Power:</span>
+                      <span className="font-semibold text-gray-900">{product.avgPowerConsumption}W</span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleViewDetails(product)}
+                      className="flex-1 bg-[#67595e] text-white px-3 py-2 rounded-lg font-semibold text-sm shadow-md hover:bg-[#8b7d82] transition-all duration-200 transform hover:scale-105"
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => window.open('https://strong-sprinkles-0a52a2.netlify.app/', '_blank')}
+                      className="flex-1 bg-gray-50 text-[#67595e] px-3 py-2 rounded-lg font-semibold text-sm shadow-md hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 border border-gray-200"
+                    >
+                      Calculator
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
-          </Swiper>
-        </div>
+          </div>
 
           {/* No Results */}
           {filteredProducts.length === 0 && (
@@ -369,7 +363,13 @@ const ProductsPage: React.FC = () => {
               <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
             </div>
           )}
-        </section>
+        </div>
+      </section>
+
+      {/* API Product Series Section */}
+      <section className="py-16 bg-white">
+        <ProductSeriesList />
+      </section>
 
       {/* Product Detail Modal */}
       <ProductDetailModal
